@@ -35,8 +35,9 @@ module DHashVips
       ((a ^ b) & (a | b) >> 128).to_s(2).count "1"
     end
     begin
-      require_relative "../idhash.#{Gem::Platform.local.os == "darwin" ? "bundle" : "o"}"
+      require_relative "./idhash.#{Gem::Platform.local.os == "darwin" ? "bundle" : "so"}"
     rescue LoadError
+      warn "C extension for IDHash is not available, using pure Ruby implementation"
       class << self
         alias distance3 distance3_ruby
       end
