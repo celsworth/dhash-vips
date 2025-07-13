@@ -37,9 +37,13 @@ module DHashVips
     begin
       require_relative "../idhash.#{Gem::Platform.local.os == "darwin" ? "bundle" : "so"}"
     rescue LoadError
-      warn "C extension for IDHash is not available, using pure Ruby implementation"
-      class << self
-        alias distance3 distance3_ruby
+      begin
+        require_relative "./idhash.#{Gem::Platform.local.os == "darwin" ? "bundle" : "so"}"
+      rescue LoadError
+        warn "C extension for IDHash is not available, using pure Ruby implementation"
+        class << self
+          alias distance3 distance3_ruby
+        end
       end
     else
       # we can't just do `defined? Bignum` because it's defined but deprecated (some internal CONST_DEPRECATED flag)
